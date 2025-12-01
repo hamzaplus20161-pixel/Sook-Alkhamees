@@ -2,7 +2,38 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>سوق الخميس</t></title>
+<title>سوق الخميس | بيع وشراء المنتجات بسهولة</title>
+
+<!-- ============================================ -->
+<!--                 🔥 SEO كامل 🔥              -->
+<!-- ============================================ -->
+
+<meta name="description" content="سوق الخميس - منصة مجانية لبيع وشراء المنتجات بسهولة. اعرض منتجاتك واتواصل مباشرة مع البائع.">
+<meta name="keywords" content="سوق الخميس, بيع وشراء, سوق, منتجات, سوق مجاني, سوق الخميس مصر, موقع بيع">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ✨ غيّر ده لرابط موقعك -->
+<link rel="canonical" href="https://hamzaplus20161-pixel.github.io/Sook-Alkhamees/">
+
+<!-- 🔥 OG -->
+<meta property="og:title" content="سوق الخميس">
+<meta property="og:description" content="منصة مجانية لبيع وشراء المنتجات بسهولة.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hamzaplus20161-pixel.github.io/Sook-Alkhamees/">
+<meta property="og:image" content="https://hamzaplus20161-pixel.github.io/Sook-Alkhamees//thumbnail.jpg">
+
+<!-- 🔥 Twitter cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="سوق الخميس">
+<meta name="twitter:description" content="منصة مجانية لبيع وشراء المنتجات بسهولة.">
+<meta name="twitter:image" content="https://hamzaplus20161-pixel.github.io/Sook-Alkhamees//thumbnail.jpg">
+
+<!-- 🔥 Google Search Console -->
+<meta name="google-site-verification" content="google6ef86a82fe4cf267.html" />
+
+<!-- favicon -->
+<link rel="icon" type="image/png" href="icon.png">
 
 <style>
     body {
@@ -41,56 +72,25 @@
         transition: .3s;
     }
 
-    .product:hover {
-        transform: translateY(-3px);
-    }
-
-    /* 🔥 أهم تعديل: الصورة تظهر كاملة على الكمبيوتر */
     .product img {
         width: 100%;
         border-radius: 15px;
-        max-height: 450px;     /* حجم كبير يناسب الكمبيوتر */
-        object-fit: contain;   /* الصورة تظهر كاملة */
-        background: #eee;      /* في حالة الصور الطويلة يظهر خلفية رمادي فاتح */
+        max-height: 350px;
+        object-fit: contain;
+        background: #eee;
     }
-
-    /* ------------------------------------------------- */
-    /* 🌟🌟🌟 الأزرار الجديدة (شكل فاخر جدًا) 🌟🌟🌟 */
-    /* ------------------------------------------------- */
 
     .btn {
         background: linear-gradient(135deg, #ff9d00, #ff7a00);
         padding: 14px 22px;
         color: white;
-        text-decoration: none;
-        display: inline-block;
-        margin-top: 12px;
         border-radius: 14px;
         font-size: 18px;
-        font-weight: bold;
         cursor: pointer;
         border: none;
-
-        backdrop-filter: blur(3px);
-        box-shadow:
-            0 4px 8px rgba(0,0,0,0.25),
-            inset 0 1px 3px rgba(255,255,255,0.4);
-
-        transition: 0.25s ease;
-    }
-
-    .btn:hover {
-        transform: translateY(-4px) scale(1.03);
-        box-shadow:
-            0 8px 15px rgba(0,0,0,0.3),
-            inset 0 1px 4px rgba(255,255,255,0.5);
-    }
-
-    .btn:active {
-        transform: translateY(2px);
-        box-shadow:
-            0 2px 5px rgba(0,0,0,0.4),
-            inset 0 1px 2px rgba(255,255,255,0.3);
+        margin-top: 12px;
+        font-weight: bold;
+        display: inline-block;
     }
 
     .deleteBtn {
@@ -109,17 +109,8 @@
         border-radius: 50%;
         border: none;
         cursor: pointer;
-        box-shadow:
-            0 6px 12px rgba(0,0,0,0.25),
-            inset 0 1px 3px rgba(255,255,255,0.4);
-        transition: 0.2s ease;
     }
 
-    #addBtn:hover {
-        transform: scale(1.1);
-    }
-
-    /* نافذة الإضافة */
     #formBox {
         position: fixed;
         top:0;
@@ -161,11 +152,7 @@
         margin-top: 12px;
         cursor: pointer;
         font-weight: bold;
-        box-shadow:
-            0 4px 8px rgba(0,0,0,0.25),
-            inset 0 1px 3px rgba(255,255,255,0.4);
     }
-
 </style>
 </head>
 
@@ -179,7 +166,6 @@
 
 <button id="addBtn">+</button>
 
-<!-- نافذة الإضافة -->
 <div id="formBox">
     <div id="formContent">
         <h3 style="text-align:center; margin:0;">إضافة منتج</h3>
@@ -211,22 +197,19 @@ let phoneInput = document.getElementById("phone");
 let sellerInput = document.getElementById("seller");
 
 let imageData = "";
-let items = JSON.parse(localStorage.getItem("kakstore") || "[]");
+let items = JSON.parse(localStorage.getItem("khamisStore") || "[]");
 
 items.forEach(drawProduct);
 
-// فتح نافذة الإضافة
 addBtn.onclick = () => formBox.style.display = "flex";
 formBox.onclick = e => { if(e.target === formBox) formBox.style.display="none"; };
 
-// قراءة الصورة
 imgInput.onchange = function(){
     let reader = new FileReader();
     reader.onload = e => imageData = e.target.result;
     reader.readAsDataURL(this.files[0]);
 };
 
-// نشر المنتج
 submitBtn.onclick = ()=>{
     let title = titleInput.value;
     let price = priceInput.value;
@@ -241,7 +224,7 @@ submitBtn.onclick = ()=>{
     let prod = {img:imageData, title, price, phone, seller};
     items.unshift(prod);
 
-    localStorage.setItem("kakstore", JSON.stringify(items));
+    localStorage.setItem("khamisStore", JSON.stringify(items));
     drawProduct(prod);
 
     formBox.style.display = "none";
@@ -254,10 +237,10 @@ submitBtn.onclick = ()=>{
     sellerInput.value="";
 };
 
-// رسم منتج
 function drawProduct(p){
     let div = document.createElement("div");
     div.className = "product";
+
     div.innerHTML = `
         <img src="${p.img}">
         <h3>${p.title}</h3>
@@ -265,26 +248,26 @@ function drawProduct(p){
         <p>البائع: ${p.seller}</p>
 
         <a class="btn" href="https://wa.me/20${p.phone}" target="_blank">واتساب</a>
+
+        <p style="margin-top:10px; font-weight:bold;">رقم الواتساب: 0${p.phone}</p>
+
         <button class="btn deleteBtn" onclick="deleteProduct('${p.title}')">حذف</button>
     `;
     productsBox.prepend(div);
 }
 
-// حذف منتج
 function deleteProduct(title){
     items = items.filter(x => x.title !== title);
-    localStorage.setItem("kakstore", JSON.stringify(items));
+    localStorage.setItem("khamisStore", JSON.stringify(items));
     location.reload();
 }
 
-// البحث
 searchBox.oninput = function(){
     let text = this.value.toLowerCase();
     document.querySelectorAll(".product").forEach(p=>{
         p.style.display = p.innerText.toLowerCase().includes(text) ? "block" : "none";
     });
 }
-
 </script>
 
 </body>

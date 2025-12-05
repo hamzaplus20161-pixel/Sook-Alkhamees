@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول | سوق الأحمدية</title>
+
+<!--=====================  STYLE  =====================-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Cairo",sans-serif;}
+body{background:#f7f7f7;}
+
+.container{
+    max-width:420px;margin:40px auto;background:white;padding:25px;
+    border-radius:12px;box-shadow:0 4px 14px #0002;
+}
+
+h2{color:#ff7a33;text-align:center;margin-bottom:25px;}
+
+label{font-weight:700;margin-top:12px;display:block;color:#444;}
+input{
+    width:100%;padding:12px;margin-top:6px;border-radius:6px;border:1px solid #ccc;font-size:15px;
+}
+button{
+    width:100%;padding:12px;margin-top:18px;border:none;border-radius:6px;
+    font-size:17px;font-weight:700;background:#ff7a33;color:white;cursor:pointer;
+}
+button:hover{background:#e46a25;}
+
+#switch{text-align:center;margin-top:15px;color:#555;cursor:pointer;}
+
+#profileImg{
+    width:120px;height:120px;border-radius:50%;border:3px dashed #ff7a33;
+    display:flex;justify-content:center;align-items:center;margin:15px auto;
+    background:#fff2e6;font-weight:700;color:#ff7a33;cursor:pointer;
+}
+#profileImg img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+
+#errorMsg{color:red;text-align:center;margin-top:8px;font-weight:700;}
+#successMsg{color:green;text-align:center;margin-top:8px;font-weight:700;}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="signupBox">
+
+<h2>إنشاء حساب</h2>
+
+<div id="profileImg">اختر صورة</div>
+<input type="file" id="imgInput" accept="image/*" style="display:none;">
+
+<label>الاسم</label>
+<input type="text" id="name">
+
+<label>الإيميل</label>
+<input type="email" id="email">
+
+<label>كلمة المرور</label>
+<input type="password" id="password">
+
+<button onclick="signup()">إنشاء حساب</button>
+<div id="errorMsg"></div>
+<div id="successMsg"></div>
+
+<div id="switch" onclick="showLogin()">لديك حساب؟ تسجيل الدخول</div>
+
+</div>
+
+
+
+
+<!--===================== LOGIN PAGE =====================-->
+
+<div class="container" id="loginBox" style="display:none;">
+
+<h2>تسجيل الدخول</h2>
+
+<label>الإيميل</label>
+<input type="email" id="loginEmail">
+
+<label>كلمة المرور</label>
+<input type="password" id="loginPassword">
+
+<button onclick="login()">تسجيل الدخول</button>
+<div id="loginError"></div>
+
+<div id="switch" onclick="showSignup()">ليس لديك حساب؟ إنشاء حساب</div>
+
+</div>
+
+
+
+
+<!--===================== OTP PAGE =====================-->
+
+<div class="container" id="otpBox" style="display:none;">
+
+<h2>تأكيد الرمز</h2>
+
+<label>اكتب الكود المكون من 6 أرقام</label>
+<input type="text" id="otp" maxlength="6">
+
+<button onclick="verifyOTP()">تأكيد</button>
+<div id="otpError"></div>
+
+</div>
+
+
+
+
+<!--===================== HOME PAGE =====================-->
+
+<div class="container" id="homeBox" style="display:none;">
+
+<h2>مرحبا بك 🎉</h2>
+
+<div style="text-align:center;">
+    <img id="homeImg" style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid #ff7a33;">
+    <h3 id="homeName" style="margin-top:15px;color:#333;"></h3>
+</div>
+
+<button onclick="logout()">تسجيل خروج</button>
+
+</div>
+
+
+
+
+
+<!--=====================  SCRIPT  =====================-->
+<script type="module">
+
+/*================= SUPABASE CONFIG =================*/
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const SUPABASE_URL = "https://nzdvboeaocarlcgoeixu.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56ZHZib2Vhb2NhcmxjZ29laXh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NTI3NTAsImV4cCI6MjA4MDMyODc1MH0.mA-hf6902t2xLH_kUedHmy0sQrjGIAmoCqN2rHZ6K_E";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+/*================= SWITCH PAGES =================*/
+window.showLogin = () => {
+    signupBox.style.display = "none";
+    loginBox.style.display = "block";
+};
+window.showSignup = () => {
+    loginBox.style.display = "none";
+    signupBox.style.display = "block";
+};
+
+
+/*================= SIGNUP =================*/
+let uploadedImageURL = null;
+
+profileImg.onclick = () => imgInput.click();
+imgInput.onchange = () => {
+    let file = imgInput.files[0];
+    let reader = new FileReader();
+    reader.onload = () => profileImg.innerHTML = `<img src="${reader.result}">`;
+    reader.readAsDataURL(file);
+};
+
+async function signup() {
+    errorMsg.textContent = "";
+    successMsg.textContent = "";
+
+    if (name.value.trim() === "" || email.value === "" || password.value === "") {
+        errorMsg.textContent = "املأ كل البيانات";
+        return;
+    }
+
+    // إنشاء الحساب
+    const { data, error } = await supabase.auth.signUp({
+        email: email.value,
+        password: password.value
+    });
+
+    if (error) {
+        errorMsg.textContent = error.message;
+        return;
+    }
+
+    let userId = data.user.id;
+
+    // رفع الصورة لو موجودة
+    if (imgInput.files.length) {
+        let file = imgInput.files[0];
+        let fileName = `profile-${Date.now()}-${file.name}`;
+
+        let { error: uploadErr } = await supabase.storage.from("profiles").upload(fileName, file);
+        if (!uploadErr) {
+            uploadedImageURL = `${SUPABASE_URL}/storage/v1/object/public/profiles/${fileName}`;
+        }
+    }
+
+    // حفظ البيانات في جدول users_data
+    await supabase.from("users_data").insert({
+        id: userId,
+        name: name.value,
+        image: uploadedImageURL
+    });
+
+    signupBox.style.display = "none";
+    otpBox.style.display = "block";
+
+    successMsg.textContent = "تم إرسال الكود للإيميل";
+}
+
+
+
+/*================= LOGIN =================*/
+async function login() {
+    loginError.textContent = "";
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginEmail.value,
+        password: loginPassword.value
+    });
+
+    if (error) {
+        loginError.textContent = "خطأ في تسجيل الدخول";
+        return;
+    }
+
+    loginBox.style.display = "none";
+    otpBox.style.display = "block";
+}
+
+
+
+/*================= VERIFY OTP =================*/
+async function verifyOTP() {
+    otpError.textContent = "";
+
+    const { data, error } = await supabase.auth.verifyOtp({
+        email: email.value || loginEmail.value,
+        token: otp.value,
+        type: "email"
+    });
+
+    if (error) {
+        otpError.textContent = "الرمز غير صحيح";
+        return;
+    }
+
+    // جلب بيانات المستخدم
+    let { data: user } = await supabase.auth.getUser();
+    let userId = user.user.id;
+
+    let { data: profile } = await supabase.from("users_data").select("*").eq("id", userId).single();
+
+    homeImg.src = profile.image || "";
+    homeName.textContent = profile.name;
+
+    otpBox.style.display = "none";
+    homeBox.style.display = "block";
+}
+
+
+
+/*================= LOGOUT =================*/
+async function logout() {
+    await supabase.auth.signOut();
+    homeBox.style.display = "none";
+    loginBox.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
